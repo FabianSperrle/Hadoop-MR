@@ -7,6 +7,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -75,7 +76,7 @@ public class WordCount extends Configured implements Tool {
     }
 }
 
-class WCMapper extends Mapper<IntWritable, // TODO: change Object to input key type
+class WCMapper extends Mapper<LongWritable, // TODO: change Object to input key type
         Text, // TODO: change Object to input value type
         Text, // TODO: change Object to output key type
         IntWritable> { // TODO: change Object to output value type
@@ -83,7 +84,7 @@ class WCMapper extends Mapper<IntWritable, // TODO: change Object to input key t
     private IntWritable one = new IntWritable(1);
 
     @Override
-    protected void map(IntWritable key, // TODO: change Object to input key type
+    protected void map(LongWritable key, // TODO: change Object to input key type
                        Text value, // TODO: change Object to input value type
                        Context context) throws IOException, InterruptedException {
 
