@@ -1,10 +1,16 @@
 package fr.eurecom.dsg.mapreduce;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.StringTokenizer;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
@@ -57,34 +63,57 @@ public class WordCountIMC extends Configured implements Tool {
   }
 }
 
-class WCIMCMapper extends Mapper<Object, // TODO: change Object to input key
+class WCIMCMapper extends Mapper<LongWritable, // TODO: change Object to input key
                                          // type
-                                 Object, // TODO: change Object to input value type
-                                 Object, // TODO: change Object to output key type
-                                 Object> { // TODO: change Object to output value type
+        Text, // TODO: change Object to input value type
+                                 Text, // TODO: change Object to output key type
+        IntWritable> { // TODO: change Object to output value type
 
   @Override
-  protected void map(Object key, // TODO: change Object to input key type
-                     Object value, // TODO: change Object to input value type
+  protected void map(LongWritable key, // TODO: change Object to input key type
+                     Text value, // TODO: change Object to input value type
                      Context context) throws IOException, InterruptedException {
 
     // * TODO: implement the map method (use context.write to emit results). Use
     // the in-memory combiner technique
+      StringTokenizer tok = new StringTokenizer(value.toString());
+      HashMap<String, Integer> map = new HashMap();
+      while (tok.hasMoreTokens()) {
+          String token = tok.nextToken();
+          if(map.containsKey(token)){
+            map.put(token, map.get(token)+1);
+          }
+          else{
+              map.put(token,1);
+          }
+
+
+      }
+      for(Map.Entry<String, Integer> entry : map.entrySet()) {
+          context.write(new Text(entry.getKey()), new IntWritable(entry.getValue()));
+      }
+
   }
 
 }
 
-class WCIMCReducer extends Reducer<Object, // TODO: change Object to input key
+class WCIMCReducer extends Reducer<Text, // TODO: change Object to input key
                                            // type
-                                   Object, // TODO: change Object to input value type
-                                   Object, // TODO: change Object to output key type
-                                   Object> { // TODO: change Object to output value type
+                                   IntWritable, // TODO: change Object to input value type
+                                   Text, // TODO: change Object to output key type
+                                   IntWritable> { // TODO: change Object to output value type
 
   @Override
-  protected void reduce(Object key, // TODO: change Object to input key type
-                        Iterable<Object> values, // TODO: change Object to input value type
+  protected void reduce(Text key, // TODO: change Object to input key type
+                        Iterable<IntWritable> values, // TODO: change Object to input value type
                         Context context) throws IOException, InterruptedException {
 
+
     // TODO: implement the reduce method (use context.write to emit results)
+      int sum = 0;
+      while (values.iterator().hasNext()) {
+          sum =+ values.iterator().next().get();
+      }
+      context.write(key, new IntWritable(sum));
   }
 }
