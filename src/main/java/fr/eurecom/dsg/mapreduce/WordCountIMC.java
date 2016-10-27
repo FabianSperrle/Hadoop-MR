@@ -14,6 +14,10 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
@@ -31,20 +35,33 @@ public class WordCountIMC extends Configured implements Tool {
 
   @Override
   public int run(String[] args) throws Exception {
-    
-    Job job = null; // TODO: define new job instead of null using conf e setting
-                    // a name
 
-    // TODO: set job input format
-    // TODO: set map class and the map output key and value classes
-    // TODO: set reduce class and the reduce output key and value classes
-    // TODO: set job output format
-    // TODO: add the input file as job input (from HDFS)
-    // TODO: set the output path for the job results (to HDFS)
-    // TODO: set the number of reducers. This is optional and by default is 1
-    // TODO: set the jar class
 
-    return job.waitForCompletion(true) ? 0 : 1; // this will execute the job
+      Configuration conf = this.getConf();
+      Job job = new Job(conf, "EmilFabian WordCount");
+
+      // TODO: set job input format
+      job.setInputFormatClass(TextInputFormat.class);
+      // TODO: set map class and the map output key and value classes
+      job.setMapperClass(WCMapper.class);
+      job.setMapOutputKeyClass(Text.class);
+      job.setMapOutputValueClass(IntWritable.class);
+      // TODO: set reduce class and the reduce output key and value classes
+      job.setReducerClass(WCReducer.class);
+      job.setOutputKeyClass(Text.class);
+      job.setOutputValueClass(IntWritable.class);
+      // TODO: set job output format
+      job.setOutputFormatClass(TextOutputFormat.class);
+      // TODO: add the input file as job input (from HDFS) to the variable inputPath
+      FileInputFormat.addInputPath(job, inputPath);
+      // TODO: set the output path for the job results (to HDFS) to the variable outputPath
+      FileOutputFormat.setOutputPath(job, outputDir);
+      // TODO: set the number of reducers using variable numberReducers
+      job.setNumReduceTasks(numReducers);
+      // TODO: set the jar class
+      job.setJarByClass(WordCount.class);
+
+      return job.waitForCompletion(true) ? 0 : 1; // this will execute the job
   }
 
   public WordCountIMC (String[] args) {
