@@ -39,7 +39,7 @@ public class StringToIntMapWritable implements Writable {
 
         int num_words = in.readInt();
         for (int i = 0; i < num_words; i++) {
-            map.put(in.readLine(), in.readInt());
+            map.put(Text.readString(in), in.readInt());
         }
     }
 
@@ -49,7 +49,7 @@ public class StringToIntMapWritable implements Writable {
         out.writeInt(this.map.size());
 
         for (Map.Entry<String, Integer> entry : this.map.entrySet()) {
-            out.writeBytes(entry.getKey());
+            Text.writeString(out, entry.getKey());
             out.writeInt(entry.getValue());
         }
     }
