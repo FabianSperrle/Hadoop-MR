@@ -16,16 +16,13 @@ import org.apache.hadoop.io.Writable;
 public class StringToIntMapWritable implements Writable {
 
     private Map<String, Integer> map;
-    private Text TMP_TEXT;
 
     public StringToIntMapWritable() {
         this.map = new HashMap<>();
-        this.TMP_TEXT = new Text();
     }
 
     public StringToIntMapWritable(Map<String, Integer> map) {
         this.map = map;
-        this.TMP_TEXT = new Text();
     }
 
     public void set(Map<String, Integer> map) {
@@ -42,24 +39,18 @@ public class StringToIntMapWritable implements Writable {
 
         int num_words = in.readInt();
         for (int i = 0; i < num_words; i++) {
-            TMP_TEXT.readFields(in);
-            int count = in.readInt();
-
-            map.put(TMP_TEXT.toString(), count);
+            map.put(in.readLine(), in.readInt());
         }
     }
 
     @Override
     public void write(DataOutput out) throws IOException {
         // Write map size
+        out.writeInt(this.map.size());
 
-        int count = 0;
         for (Map.Entry<String, Integer> entry : this.map.entrySet()) {
-            TMP_TEXT.set(entry.getKey());
-            TMP_TEXT.write(out);
-
-            count = entry.getValue();
-            out.writeInt(count);
+            out.writeBytes(entry.getKey());
+            out.writeInt(entry.getValue());
         }
     }
 }
