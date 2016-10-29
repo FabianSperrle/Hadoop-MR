@@ -3,21 +3,16 @@ package fr.eurecom.dsg.mapreduce;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
 import java.util.HashSet;
 import java.util.StringTokenizer;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.filecache.DistributedCache;
-import org.apache.hadoop.fs.BufferedFSInputStream;
-import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
-import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -68,7 +63,7 @@ public class DistributedCacheJoin extends Configured implements Tool {
         FileOutputFormat.setOutputPath(job, this.outputDir);
 
         job.setNumReduceTasks(this.numReducers);
-        job.setJarByClass(DistributedCache.class);
+        job.setJarByClass(DistributedCacheJoin.class);
 
         return job.waitForCompletion(true) ? 0 : 1;
     }
