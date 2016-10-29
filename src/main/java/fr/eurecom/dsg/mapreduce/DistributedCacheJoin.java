@@ -90,7 +90,7 @@ class DistributedCacheMapper extends Mapper<LongWritable, Text, Text, IntWritabl
         this.TMP_TEXT = new Text();
 
         Path[] cacheFiles = DistributedCache.getLocalCacheFiles(context.getConfiguration());
-        FileSystem fs = FileSystem.get(context.getConfiguration());
+        FileSystem fs = FileSystem.getLocal(context.getConfiguration());
         Path stopWordPath = new Path(cacheFiles[0].toString());
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(fs.open(stopWordPath)));
