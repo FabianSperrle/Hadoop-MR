@@ -103,8 +103,6 @@ class DistributedCacheMapper extends Mapper<LongWritable, Text, Text, IntWritabl
 
     @Override
     protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
-        super.map(key, value, context);
-
         StringTokenizer tok = new StringTokenizer(value.toString());
         while (tok.hasMoreTokens()) {
             String token = tok.nextToken();
