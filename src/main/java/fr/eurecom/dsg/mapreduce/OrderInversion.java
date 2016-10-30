@@ -7,10 +7,8 @@ import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
-import org.apache.hadoop.mapreduce.Job;
-import org.apache.hadoop.mapreduce.Mapper;
-import org.apache.hadoop.mapreduce.Partitioner;
-import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.*;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
@@ -139,16 +137,28 @@ public class OrderInversion extends Configured implements Tool {
     public int run(String[] args) throws Exception {
         Configuration conf = this.getConf();
 
-        Job job = null;  // TODO: define new job instead of null using conf e setting a name
+        Job job = new Job(conf, "FabianEmil Order Inversion v0.9");
 
-        // TODO: set job input format
-        // TODO: set map class and the map output key and value classes
-        // TODO: set reduce class and the reduce output key and value classes
-        // TODO: set job output format
-        // TODO: add the input file as job input (from HDFS) to the variable inputFile
-        // TODO: set the output path for the job results (to HDFS) to the variable outputPath
-        // TODO: set the number of reducers using variable numberReducers
-        // TODO: set the jar class
+        job.setInputFormatClass(TextInputFormat.class);
+
+        job.setMapperClass(PairMapper.class);
+        job.setMapOutputKeyClass(TextPair.class);
+        job.setMapOutputValueClass(IntWritable.class);
+
+        job.setCombinerClass(PairCombiner.class);
+
+        job.setPartitionerClass(PartitionerTextPair.class);
+
+        job.setReducerClass(PairReducer.class);
+        job.setOutputKeyClass(TextPair.class);
+        job.setOutputValueClass(DoubleWritable.class);
+
+        FileInputFormat.addInputPath(job, this.inputPath);
+        FileOutputFormat.setOutputPath(job, this.outputDir);
+
+        job.setNumReduceTasks(this.numReducers);
+
+        job.setJarByClass(OrderInversion.class);
 
         return job.waitForCompletion(true) ? 0 : 1;
     }
