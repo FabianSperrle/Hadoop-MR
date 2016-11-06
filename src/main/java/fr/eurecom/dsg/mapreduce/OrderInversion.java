@@ -98,13 +98,13 @@ public class OrderInversion extends Configured implements Tool {
     }
 
     public static class PairReducer extends Reducer<TextPair, IntWritable, TextPair, DoubleWritable> {
-        private static Map<String, Integer> marginalMap;
+        private static int marginal;
 
         @Override
         protected void setup(Context context) throws IOException, InterruptedException {
             super.setup(context);
 
-            marginalMap = new HashMap<>();
+            marginal = 0;
         }
 
         @Override
@@ -116,15 +116,14 @@ public class OrderInversion extends Configured implements Tool {
                     sum += i.get();
                 }
 
-                marginalMap.put(word, sum);
+                marginal = sum;
             } else {
                 double sum = 0.0;
                 for (IntWritable i : values) {
                     sum += i.get();
                 }
 
-                int total = marginalMap.get(word);
-                context.write(key, new DoubleWritable(sum / total));
+                context.write(key, new DoubleWritable(sum / marginal));
             }
         }
     }
