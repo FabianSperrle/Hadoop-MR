@@ -101,6 +101,8 @@ public class ReduceSideJoin extends Configured implements Tool {
 
             for (int in : incoming) {
                 for (int out : outgoing) {
+                    if (in == out) continue;
+
                     key.set(in, out);
                     context.write(key, value);
                 }
