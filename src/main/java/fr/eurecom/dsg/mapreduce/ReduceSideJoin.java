@@ -58,7 +58,7 @@ public class ReduceSideJoin extends Configured implements Tool {
         return job.waitForCompletion(true) ? 0 : 1;
     }
 
-    public class ReduceSideJoinMapper extends Mapper<LongWritable, Text, IntWritable, IntPair> {
+    public static class ReduceSideJoinMapper extends Mapper<LongWritable, Text, IntWritable, IntPair> {
         private IntPair connection = new IntPair();
         private IntWritable outputKey = new IntWritable();
 
@@ -79,7 +79,7 @@ public class ReduceSideJoin extends Configured implements Tool {
         }
     }
 
-    public class ReduceSideJoinReducer extends Reducer<IntWritable, IntPair, IntPair, IntWritable> {
+    public static class ReduceSideJoinReducer extends Reducer<IntWritable, IntPair, IntPair, IntWritable> {
         private Set<Integer> incoming = new HashSet<>();
         private Set<Integer> outgoing = new HashSet<>();
 
@@ -113,7 +113,7 @@ public class ReduceSideJoin extends Configured implements Tool {
         }
     }
 
-    public class IntPair implements Writable {
+    public static class IntPair implements Writable {
         private int first;
         private int second;
 
