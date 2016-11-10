@@ -148,6 +148,11 @@ public class ReduceSideJoin extends Configured implements Tool {
             this.first = dataInput.readInt();
             this.second = dataInput.readInt();
         }
+
+        @Override
+        public String toString() {
+            return "" + this.first + '\t' + this.second;
+        }
     }
 
     public ReduceSideJoin(String[] args) {
