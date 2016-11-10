@@ -42,11 +42,11 @@ public class WordCountIMC extends Configured implements Tool {
         // TODO: set job input format
         job.setInputFormatClass(TextInputFormat.class);
         // TODO: set map class and the map output key and value classes
-        job.setMapperClass(WCMapper.class);
+        job.setMapperClass(WCIMCMapper.class);
         job.setMapOutputKeyClass(Text.class);
         job.setMapOutputValueClass(IntWritable.class);
         // TODO: set reduce class and the reduce output key and value classes
-        job.setReducerClass(WCReducer.class);
+        job.setReducerClass(WCIMCReducer.class);
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(IntWritable.class);
         // TODO: set job output format
